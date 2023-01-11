@@ -3,9 +3,9 @@ from datetime import datetime
 from aiogoogle import Aiogoogle
 from app.core.config import settings
 
-
-FORMAT = "%Y/%m/%d %H:%M:%S"
+FORMAT = '%Y/%m/%d %H:%M:%S'
 RANGE_UPDATE = 'A1:E400'
+NUM_COUNT = 100
 SPREADSHEET_BODY = {
     'properties': {'title': None, 'locale': 'ru_RU'},
     'sheets': [{
@@ -13,10 +13,15 @@ SPREADSHEET_BODY = {
             'sheetType': 'GRID',
             'sheetId': 0,
             'title': 'Лист1',
-            'gridProperties': {'rowCount': 100, 'columnCount': 100}
+            'gridProperties': {'rowCount': NUM_COUNT, 'columnCount': NUM_COUNT}
         }
     }]
 }
+ROW_COLUMN_TOO_BIG = (
+    'столбцов - {columns_value}, но'
+    'количество строк не'
+    'должно превышать {rowcount_draft}, '
+    'a столбцов - {columncount_draft}')
 
 
 async def spreadsheets_create(wrapper_services: Aiogoogle) -> str:
@@ -42,7 +47,7 @@ async def set_user_permissions(
         service.permissions.create(
             fileId=spreadsheet_id,
             json=permissions_body,
-            fields="id"
+            fields='id'
         ))
 
 
@@ -52,16 +57,20 @@ async def spreadsheets_update_value(
         wrapper_services: Aiogoogle
 ) -> None:
     now_date_time = datetime.now().strftime(FORMAT)
-    service = await wrapper_services.discover('sheets', 'v4')
-    table_values = [
+    head = [
         ['Отчет от', now_date_time],
         ['Топ проектов по скорости закрытия'],
         ['Название проекта', 'Время сбора', 'Описание']
     ]
+    service = await wrapper_services.discover('sheets', 'v4')
     for project in projects:
         closure_period = project.close_date - project.create_date
-        new_row = [str(project.name), str(closure_period), str(project.description)]
-        table_values.append(new_row)
+        new_row = [str(project.name), str(closure_period),
+                   str(project.description)]
+        table_values = [
+            *head,
+            *[list(map(str, i)) for i in new_row],
+        ]
     table_values = table_values[0:3] + sorted(
         table_values[3:], key=lambda project: project[1]
     )
@@ -69,6 +78,16 @@ async def spreadsheets_update_value(
         'majorDimension': 'ROWS',
         'values': table_values
     }
+    columns_value = max(len(items_to_count)
+                        for items_to_count in table_values)
+    rows_value = len(table_values)
+    if (NUM_COUNT < rows_value or
+            NUM_COUNT < columns_value):
+        raise ValueError(ROW_COLUMN_TOO_BIG.format(
+            rows_value=rows_value,
+            columns_value=columns_value,
+            rowcount_draft=NUM_COUNT,
+            columncount_draft=NUM_COUNT))
     await wrapper_services.as_service_account(
         service.spreadsheets.values.update(
             spreadsheetId=spreadsheet_id,

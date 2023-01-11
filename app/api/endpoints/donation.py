@@ -45,10 +45,9 @@ async def get_my_donations(
         user: User = Depends(current_user),
 ):
     """Get all the donations for the current user."""
-    donations = await donation_crud.get_donations_by_user(
+    return await donation_crud.get_donations_by_user(
         session=session, user=user
     )
-    return donations
 
 
 @router.post(
