@@ -1,57 +1,64 @@
-## Веб-приложение
-## Используемые технологии
-:snake: Python 3.9, :incoming_envelope: FastAPI 0.78.0, :busts_in_silhouette: FastAPI-Users 10.0.4, :recycle: Pydantic 1.9.1, :package: SQLAlchemy 1.4.36, :notebook: aiosqlite 0.17.0, :memo: Alembic 1.7.7, :white_check_mark: Flake8 4.0.1
-## Приложение для Благотворительного фонда поддержки котиков QRKot.
-Фонд собирает пожертвования на различные целевые проекты: на медицинское обслуживание нуждающихся хвостатых, на обустройство кошачьей колонии в подвале, на корм оставшимся без попечения кошкам — на любые цели, связанные с поддержкой кошачьей популяции.
+# QRKot Charity Foundation
 
-## Заполнение .env файла
+The QRKot Charity Foundation is a web application built using Python 3.9 and FastAPI 0.78.0. The application allows users to make donations to various cat-related causes, such as medical care for cats in need, setting up cat colonies in basements, and providing food for homeless cats.
 
-Пример заполнения **.env** файла находится в файле **.env.example**
+## Technologies Used
 
-## Запуск проекта
-1. Клонировать репозиторий
+- Python 3.9
+- FastAPI 0.78.0
+- FastAPI-Users 10.0.4
+- Pydantic 1.9.1
+- SQLAlchemy 1.4.36
+- aiosqlite 0.17.0
+- Alembic 1.7.7
+- Flake8 4.0.1
 
-2. Создать и активировать виртуальное окружение:
+## Getting Started
+
+### Installation
+
+1. Clone this repository:
+
+```bash
+git clone https://github.com/PavelFil98/QRKot_charity.git
+```
+2. Create and activate a virtual environment:
 ```bash
 python3 -m venv venv
-
-bash/zsh
 source venv/bin/activate
-
-Windows:
-venv\Scripts\activate.bat
 ```
-
-3. Обновить pip и установить зависимости из ```requirements.txt```
+3. Upgrade pip and install the required packages:
 ```bash
 python3 -m pip install --upgrade pip
-
 pip install -r requirements.txt
 ```
-
-4. Создать и заполнить файл **.env**:
-
+4. Create and fill in the .env file:
 ```bash
 touch .env
 ```
-
-5. Выполнить миграции:
+5. Run the database migrations:
 ```bash
 alembic upgrade head
 ```
-
-6. Запустить проект:
+6. Starting the Application: To start the application, run the following command:
 ```bash
 uvicorn app.main:app
 ```
+The application will be available at http://127.0.0.1:8000.
 
-После запуска проект будет доступен по адресу: http://127.0.0.1:8000
+## API Documentation
 
-Документация к API досупна по адресам:
+The API documentation is available at the following URLs:
+
 - Swagger: http://127.0.0.1:8000/docs
 - Redoc: http://127.0.0.1:8000/redoc
 
-### Автор
-PAvel Filipovich
-### Email
-pf1860525@gmail.com
+## Author
+
+Pavel Filipovich
+
+## Contact
+
+Email: pf1860525@gmail.com
+
+Please feel free to reach out if you have any questions or feedback.
